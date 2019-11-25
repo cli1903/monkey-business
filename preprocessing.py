@@ -48,25 +48,18 @@ def align_kin(file):
         spks.append(spkcounts)
         
         
-        for j in range(0, len(bintime), 10):
-            
+        for j in range(0, len(bintime), 10):       
             if j + 10 >= len(bintime):
                 break
-            
-            trial_stack.append(spkcounts[:][j: j + 10])
+            trial_stack.append(np.array(spkcounts)[:][j: j + 10])
             trial_motion.append(kin_move[:, j + 10])
             
-        
-        #print(trial_motion)
+    
         stacked_bins.append(trial_stack)
         motion_labels.append(trial_motion)
         
     return stacked_bins, motion_labels
-            
-            
-    
-        
-    
+                 
 
 #monkey1 = 'COS071212_MOCAP.mat'
 #monkey2 = 'GAR080710_MOCAP.mat'
