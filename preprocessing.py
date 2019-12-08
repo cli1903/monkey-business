@@ -7,12 +7,12 @@ import numpy as np
 
 """
 Created on Thu Nov 21 16:18:16 2019
+
+@author: cindyli
 """
 
 def get_data(file):
     monkey = loadmat(file)
-    
-    print("loaded")
     
     kin = monkey["KIN"]
     kin_time = monkey["kin_times"]
@@ -31,7 +31,8 @@ def get_data(file):
         
         start_bins = np.arange(np.min(kin_time[:,i][0]), np.max(kin_time[:,i][0]), bin_size)
         
-        tk = kin[:,i][0]       
+        tk = kin[:,i][0]
+        
         
         spkcounts = []
         for j in range(260):
@@ -45,12 +46,13 @@ def get_data(file):
         aligned.append(kin_move)
         spks.append(spkcounts)
         
-        #print(np.array(spkcounts).shape)     
+        #print(np.array(spkcounts).shape)
         
-        for j in range(0, len(bintime), 50):       
+        
+        for j in range(0, len(bintime), 10):       
             if j + 10 >= len(bintime):
                 break
-            trial_stack.append(np.array(spkcounts)[:, j : j + 10])
+            trial_stack.append(np.array(spkcounts)[:, j:j+10])
             trial_motion.append(np.array(kin_move)[:, j + 10])
         
             
@@ -68,11 +70,13 @@ def get_data(file):
         
     return stacked_bins, motion_labels
 
-
-#monkey1 = 'COS071212_MOCAP.mat'
+monkey1 = 'COS071212_MOCAP.mat'
 #monkey2 = 'GAR080710_MOCAP.mat'
     
 #monkey = loadmat(monkey1)
 
-        
-    
+
+x, y = get_data(monkey1)
+
+print(x.shape)
+print(y.shape)
