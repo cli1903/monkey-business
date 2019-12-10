@@ -12,6 +12,7 @@ import numpy as np
 from preprocessing import get_data
 import tensorflow as tf
 from model import Model
+import matplotlib.pyplot as plt
 
 def train(model, train_inputs, train_labels):
     '''
@@ -50,7 +51,9 @@ def test(model, test_inputs, test_labels):
     # TODO: Return accuracy across testing set
 
     pred = model.call(test_inputs)
-    return model.loss(pred, test_labels)
+    loss = model.loss(pred, test_labels)
+    return loss
+
 
 
 def main():
@@ -61,10 +64,14 @@ def main():
     :return: None
     '''
 
-    NUM_EPOCHS = 200
     # TODO: load MNIST train and test examples into train_inputs, train_labels, test_inputs, test_labels
     fr, km = get_data('COS071212_MOCAP.mat')
     
+    indices = tf.range(0, len(fr))
+    tf.random.shuffle(indices)
+    fr = tf.gather(fr, indices)
+    km = tf.gather(km, indices)
+
     eighty_p = int(len(fr) * 0.8)
     
     train_inp = fr[:eighty_p]
@@ -78,21 +85,34 @@ def main():
     model = Model(29)
 
     # TODO: Train model by calling train() ONCE on all data
-    
-    indices = range(0, len(train_lab))
-    for i in range(NUM_EPOCHS):
-        tf.random.shuffle(train_lab)
+    results = 0
+    final_results = 0
+    num_epochs = 200
+    loss_list = []
+    for i in range(num_epochs):
+        print("EPOCH: ", i)
+        indices = tf.range(0, len(train_inp))
+        tf.random.shuffle(indices)
+        
         train_inp = tf.gather(train_inp, indices)
         train_lab = tf.gather(train_lab, indices)
         print("training")
         train(model, train_inp, train_lab)
+
+        # TODO: Test the accuracy by calling test() after running train()
         print("testing")
         results = test(model, test_inp, test_lab)
-
-    # TODO: Test the accuracy by calling test() after running train()
+        loss_list.append(results)
+        print("results: ", results)
+        final_results += results
     
-    
-    print("results:", results)
+    epoch_list = tf.range(0, num_epochs)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss per Epoch')
+    plt.title('Loss Between Predicted and Actual Kinematic Positions')
+    plt.plot(epoch_list, loss_list)
+    plt.show()
+    print("final_results: ", final_results / num_epochs)
 
 
 
