@@ -20,14 +20,13 @@ class Model(tf.keras.Model):
 
         super(Model, self).__init__()
 
-        self.window_size = 20
         self.batch_size = 100
         self.rnn_size = 300
         self.num_markers = kin_markers
         
         
         self.rnn = tf.keras.layers.LSTM(self.rnn_size, return_sequences = True, return_state = True)
-        self.dense1 = tf.keras.layers.Dense(1000, activation = 'relu')
+        self.dense1 = tf.keras.layers.Dense(1000, activation = tf.nn.leaky_relu)
         self.dense2 = tf.keras.layers.Dense(self.num_markers)    
         self.optimizer = tf.keras.optimizers.Adam(learning_rate = 0.01)
         self.flatten = tf.keras.layers.Flatten()
